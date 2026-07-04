@@ -55,7 +55,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen parchment-bg">
+    <div className="min-h-screen">
       <a href="#main-content" className="skip-link sr-only focus:not-sr-only">
         Skip to content
       </a>

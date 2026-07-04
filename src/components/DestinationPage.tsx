@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowLeft, MapPin, Sparkles, Search, Compass } from 'lucide-react';
+import { ArrowLeft, MapPin, Sparkles, Search, Compass, BookOpen } from 'lucide-react';
+import { motion } from 'motion/react';
 import { DestinationData, TravelPreference } from '../types';
+import indiaBg from '../assets/india_bg.jpg';
 import DiscoveryDeck from './DiscoveryDeck';
 import ExperienceLog from './ExperienceLog';
 import CulturalTrivia from './CulturalTrivia';
@@ -47,20 +49,62 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
     if (searchQuery.trim()) onSearch(searchQuery.trim());
   };
 
+  const [bgImage, setBgImage] = useState<string>(indiaBg);
+
+  React.useEffect(() => {
+    let active = true;
+    const fetchWikiImage = async () => {
+      // 1. Check curated stunning images for popular cities
+      const name = data.name.toLowerCase();
+      if (name.includes('varanasi')) return setBgImage('https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('jaipur')) return setBgImage('https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('kerala')) return setBgImage('https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('ladakh')) return setBgImage('https://images.unsplash.com/photo-1623910271000-47b198889989?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('hampi')) return setBgImage('https://images.unsplash.com/photo-1620766165457-a80fe5921709?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('agra') || name.includes('taj')) return setBgImage('https://images.unsplash.com/photo-1564507592224-2004d0af21f0?q=80&w=2070&auto=format&fit=crop');
+      if (name.includes('udaipur')) return setBgImage('https://images.unsplash.com/photo-1615836245337-f5b9b2306c59?q=80&w=2070&auto=format&fit=crop');
+      
+      // 2. Fetch original high-res image from Wikipedia!
+      try {
+        const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(data.name)}`);
+        if (res.ok) {
+          const wikiData = await res.json();
+          if (active && wikiData.originalimage && wikiData.originalimage.source) {
+            setBgImage(wikiData.originalimage.source);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch wiki image:', err);
+      }
+      
+      // 3. Fallback to maximalist background
+      if (active) setBgImage(indiaBg);
+    };
+
+    setBgImage(indiaBg); // Reset while loading new one
+    fetchWikiImage();
+    
+    return () => { active = false; };
+  }, [data.name]);
+
   return (
-    <div className="min-h-screen parchment-bg">
-      {/* ── Top ornamental border ── */}
-      <div className="india-border-strip" />
+    <div className="relative min-h-screen text-white">
+      {/* ── Dynamic Background ── */}
+      <div 
+        className="bg-maximalist fixed inset-0 -z-10 animate-fade-in" 
+        style={{ backgroundImage: `url('${bgImage}')` }}
+      />
 
       {/* ── Navigation bar ── */}
-      <nav className="india-nav sticky top-0 z-50" role="navigation" aria-label="Destination navigation">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+      <nav className="relative z-20 flex justify-between items-center p-4 max-w-7xl mx-auto" role="navigation" aria-label="Destination navigation">
+        <div className="flex items-center gap-4 w-full">
           {/* Back button + logo */}
           <div className="flex items-center gap-4">
             <button
               id="back-to-home-btn"
               onClick={onBack}
-              className="flex items-center gap-2 text-amber-300/80 hover:text-amber-300 transition-colors text-sm font-body font-medium"
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm font-body font-medium"
               aria-label="Back to Bharat Darshan home"
             >
               <ArrowLeft size={16} />
@@ -76,130 +120,97 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
             </div>
           </div>
 
-          {/* Inline search */}
-          <div className="flex items-center gap-2 flex-1 max-w-sm">
-            <div className="relative flex-1">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/60" />
-              <input
-                id="dest-search-input"
-                type="search"
-                placeholder="Search another place..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleNewSearch()}
-                className="india-search w-full pl-9 pr-3 py-2 text-xs"
-                disabled={loading}
-                aria-label="Search for another destination"
-                autoComplete="off"
-              />
+          {/* Search box (Glass) */}
+          <div className="flex-1 max-w-sm hidden sm:block">
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
+                <input
+                  id="dest-search-input"
+                  type="search"
+                  placeholder="Search another place..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleNewSearch()}
+                  className="glass-input w-full pl-9 pr-3 py-2 text-xs bg-transparent border-none outline-none text-white placeholder-white/50"
+                  disabled={loading}
+                  aria-label="Search for another destination"
+                  autoComplete="off"
+                />
+              </div>
+              <button
+                id="dest-search-btn"
+                onClick={handleNewSearch}
+                disabled={loading || !searchQuery.trim()}
+                className="btn-saffron px-3 py-2 rounded-full text-xs font-semibold"
+                aria-label="Search"
+              >
+                {loading ? '...' : 'Go'}
+              </button>
             </div>
-            <button
-              id="dest-search-btn"
-              onClick={handleNewSearch}
-              disabled={loading || !searchQuery.trim()}
-              className="btn-saffron px-3 py-2 rounded-full text-xs font-semibold"
-              aria-label="Search"
-            >
-              {loading ? '...' : 'Go'}
-            </button>
           </div>
         </div>
       </nav>
 
-      {/* ── Destination Hero Banner ── */}
-      <section className="hero-bg relative overflow-hidden py-16 px-6">
-        {/* Decorative ring */}
-        <div className="absolute right-[-80px] top-[-80px] w-[320px] h-[320px] rounded-full pointer-events-none"
-          style={{ border: '1px solid rgba(201,150,12,0.15)' }} />
-        <div className="absolute right-[-40px] top-[-40px] w-[240px] h-[240px] rounded-full pointer-events-none"
-          style={{ border: '1px solid rgba(232,132,26,0.1)' }} />
-
-        <div className="max-w-5xl mx-auto relative z-10">
-          {/* Location badge */}
-          <div className="flex items-center gap-2 mb-4">
-            <MapPin size={14} style={{ color: 'var(--saffron)' }} />
-            <span className="text-xs font-body font-semibold tracking-wider uppercase"
-              style={{ color: 'var(--saffron-light)' }}>
-              {data.country}
-            </span>
-            {data.coordinates && (
-              <span className="text-xs font-mono" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                · {data.coordinates.lat.toFixed(2)}°N, {data.coordinates.lng.toFixed(2)}°E
-              </span>
-            )}
-          </div>
-
-          {/* Destination name */}
-          <h1 className="font-display font-bold text-white mb-4"
-            style={{ fontSize: 'clamp(2.5rem, 7vw, 5rem)', lineHeight: 1.05 }}>
-            {data.name}
-          </h1>
-
-          {/* Summary */}
-          <p className="font-body text-amber-100/70 max-w-2xl leading-relaxed mb-8"
-            style={{ fontSize: '15px' }}>
-            {data.summary}
-          </p>
-
-          {/* Proverb block */}
-          {data.localProverb && (
-            <div className="proverb-block p-5 max-w-2xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <div className="text-xs font-body font-semibold tracking-widest uppercase mb-3"
-                style={{ color: 'var(--saffron-light)' }}>
-                ✦ Local Wisdom / स्थानीय ज्ञान
-              </div>
-              <blockquote className="font-display italic text-lg font-semibold mb-2"
-                style={{ color: 'var(--gold-light)', lineHeight: 1.4 }}>
-                "{data.localProverb.text}"
-              </blockquote>
-              <p className="text-xs font-body mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>Translation: </span>
-                {data.localProverb.translation}
-              </p>
-              <p className="text-xs font-body" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                <span className="font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>Meaning: </span>
-                {data.localProverb.meaning}
-              </p>
+      {/* ── Hero Banner (Glass) ── */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 pb-8"
+      >
+        <div className="glass-panel-dark p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 shadow-2xl">
+          <div className="flex-1 text-center md:text-left z-10 relative">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 text-xs font-semibold tracking-widest text-saffron-light bg-black/30 border border-saffron-light/20">
+              <MapPin size={12} /> {data.country}
             </div>
-          )}
-
-          {/* Stats strip */}
-          <div className="flex flex-wrap gap-6 mt-8">
-            {[
-              { label: 'Attractions', count: data.attractions?.length ?? 0, emoji: '🏛️' },
-              { label: 'Hidden Gems', count: data.hiddenGems?.length ?? 0, emoji: '💎' },
-              { label: 'Experiences', count: data.experiences?.length ?? 0, emoji: '🎭' },
-              { label: 'Festivals', count: data.events?.length ?? 0, emoji: '🎊' },
-            ].map((stat) => (
-              <div key={stat.label} className="flex items-center gap-2">
-                <span className="text-lg">{stat.emoji}</span>
-                <div>
-                  <div className="text-lg font-display font-bold" style={{ color: 'var(--gold-light)' }}>
-                    {stat.count}
-                  </div>
-                  <div className="text-xs font-body" style={{ color: 'rgba(255,255,255,0.4)' }}>{stat.label}</div>
+            <h1 className="font-display text-5xl md:text-6xl font-black text-white mb-4 drop-shadow-lg">
+              {data.name}
+            </h1>
+            <p className="font-body text-base md:text-lg text-white/90 leading-relaxed drop-shadow-md">
+              {data.summary}
+            </p>
+          </div>
+          
+          {data.localProverb && (
+            <div className="w-full md:w-80 shrink-0 z-10 relative">
+              <div className="glass-card p-6 rounded-2xl relative text-center border-saffron-light/30">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-saffron text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg">
+                  <BookOpen size={16} />
+                </div>
+                <div className="font-devanagari text-xl text-saffron-light mb-3 mt-2 font-bold drop-shadow-sm">
+                  "{data.localProverb.text}"
+                </div>
+                <div className="font-body font-bold text-sm text-white mb-2">
+                  "{data.localProverb.translation}"
+                </div>
+                <div className="font-body text-xs text-white/70 italic">
+                  {data.localProverb.meaning}
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
-      </section>
+      </motion.div>
 
       {/* ── Tab Navigation ── */}
-      <div className="sticky z-40 px-6 py-4" style={{ top: '57px', background: 'rgba(253,246,227,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(201,150,12,0.15)' }}>
+      <div className="sticky z-40 px-6 py-4 mx-4" style={{ top: '80px' }}>
         <div className="max-w-5xl mx-auto">
-          <div className="tab-nav" style={{ width: 'fit-content', maxWidth: '100%' }} role="tablist" aria-label="Destination sections">
+          <div className="glass-panel p-2 flex overflow-x-auto custom-scroll" role="tablist" aria-label="Destination sections" style={{ background: 'rgba(15, 6, 2, 0.6)' }}>
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 id={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
-                className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                className={`flex-1 py-3 px-4 text-sm font-bold font-body whitespace-nowrap transition-all rounded-xl ${
+                  activeTab === tab.id 
+                    ? 'bg-gradient-to-r from-saffron to-crimson text-white shadow-lg' 
+                    : 'text-white/70 hover:text-white hover:bg-white/10'
+                }`}
                 role="tab"
                 aria-selected={activeTab === tab.id}
                 aria-controls={`tab-panel-${tab.id}`}
               >
-                {tab.emoji} {tab.label}
+                {tab.emoji} <span className="ml-2">{tab.label}</span>
               </button>
             ))}
           </div>
