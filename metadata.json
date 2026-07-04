@@ -1,0 +1,6 @@
+{
+  "name": "Cultural Atlas",
+  "description": "A full-stack, GenAI-powered cultural discovery and immersive traveler storytelling platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
