@@ -184,7 +184,7 @@ export default function CulturalAdvisor({ destination }: CulturalAdvisorProps) {
               <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--gold)', animationDelay: '150ms' }} />
               <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--saffron)', animationDelay: '300ms' }} />
             </div>
-            <span>Pandit Ji is consulting wisdom...</span>
+            <span>Thinking...</span>
           </div>
         )}
       </div>

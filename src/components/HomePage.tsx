@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, MapPin, ArrowRight, Star, Compass } from 'lucide-react';
+import { Search, MapPin, ArrowRight, Compass } from 'lucide-react';
 import { TravelPreference } from '../types';
 
 interface HomePageProps {
@@ -103,9 +103,9 @@ const FEATURED_DESTINATIONS = [
 ];
 
 const HOW_IT_WORKS = [
-  { step: '01', icon: '🔍', title: 'Search a Destination', desc: 'Enter any Indian city, town, or region. Our AI knows them all.' },
-  { step: '02', icon: '🤖', title: 'AI Generates Culture', desc: 'Gemini AI crafts authentic proverbs, hidden gems, festivals, and local wisdom.' },
-  { step: '03', icon: '🗺️', title: 'Explore & Discover', desc: 'Dive into attractions, stories, trivia, and chat with your cultural concierge.' },
+  { step: '01', icon: '🔍', title: 'Choose a Destination', desc: 'Search any Indian city, region, or landmark. From Varanasi to Vizag, every place has a story.' },
+  { step: '02', icon: '📜', title: 'Unlock Its Culture', desc: 'Receive an immersive guide — authentic proverbs, hidden gems, festivals, local wisdom, and folklore.' },
+  { step: '03', icon: '🗺️', title: 'Explore Deeply', desc: 'Discover attractions, read sensory travel narratives, take cultural trivia, and consult your guide.' },
 ];
 
 export default function HomePage({ onSearch, loading, loadingDestinationName, error }: HomePageProps) {
@@ -137,9 +137,8 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-amber-300/70 text-xs font-body">
-            <Sparkles size={12} className="text-amber-400" />
-            <span>Powered by Gemini AI</span>
+          <div className="text-xs font-body text-amber-300/50 tracking-wide">
+            Cultural Discovery Platform
           </div>
         </div>
       </nav>
@@ -177,11 +176,9 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
         {/* Hero content */}
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-semibold font-body tracking-wider"
-            style={{ background: 'rgba(232,132,26,0.15)', border: '1px solid rgba(232,132,26,0.4)', color: '#f5a543' }}>
-            <Star size={11} fill="currentColor" />
-            Generative AI · Cultural Discovery
-            <Star size={11} fill="currentColor" />
+          <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full mb-6 text-xs font-semibold font-body tracking-widest uppercase"
+            style={{ background: 'rgba(232,132,26,0.12)', border: '1px solid rgba(232,132,26,0.35)', color: '#e6b020', letterSpacing: '0.12em' }}>
+            Incredible India · Cultural Atlas
           </div>
 
           {/* Title */}
@@ -242,8 +239,8 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
 
             {/* Loading indicator */}
             {loading && loadingDestinationName && (
-              <div className="mt-4 text-amber-300/80 text-sm font-body animate-fade-in">
-                🤖 Consulting ancient scrolls of <span className="font-semibold text-amber-300">{loadingDestinationName}</span>... this takes ~15 seconds
+              <div className="mt-4 text-amber-300/70 text-sm font-body animate-fade-in">
+                Preparing your guide to <span className="font-semibold text-amber-300">{loadingDestinationName}</span> — this takes a moment
               </div>
             )}
 
@@ -275,16 +272,16 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
               <div className="absolute inset-0 flex items-center justify-center text-3xl">🪷</div>
             </div>
             <h3 className="font-display text-xl font-bold mb-2" style={{ color: 'var(--text-dark)' }}>
-              Consulting the Scrolls
+              Preparing Your Guide
             </h3>
             <p className="text-sm font-body mb-1" style={{ color: 'var(--text-medium)' }}>
-              Generating cultural atlas for
+              Building the cultural atlas for
             </p>
             <p className="font-display font-bold italic text-xl" style={{ color: 'var(--saffron)' }}>
               {loadingDestinationName}
             </p>
             <p className="text-xs mt-3 font-body" style={{ color: 'var(--text-muted)' }}>
-              AI is crafting authentic proverbs, hidden gems, local experiences & trivia...
+              Curating proverbs, hidden gems, local experiences & folklore — this takes a moment.
             </p>
           </div>
         </div>
@@ -333,7 +330,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
               Featured Destinations
             </h2>
             <p className="text-sm font-body max-w-xl mx-auto" style={{ color: 'var(--text-muted)' }}>
-              Click any destination to let our AI generate a complete cultural atlas — authentic proverbs, hidden gems, local experiences, festivals, and more.
+              Select any destination to receive a complete cultural atlas — authentic proverbs, hidden gems, local experiences, festivals, and oral histories.
             </p>
           </div>
 
@@ -389,11 +386,10 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-left">
             <div className="font-devanagari text-amber-400 font-semibold text-lg">भारत दर्शन</div>
-            <div className="text-amber-200/40 text-xs font-body mt-1">GenAI-powered cultural discovery · Zero mock data</div>
+            <div className="text-amber-200/40 text-xs font-body mt-1">India's Cultural Discovery Platform</div>
           </div>
-          <div className="flex items-center gap-2 text-amber-300/60 text-xs font-body">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            API: gemini-3.5-flash · Live generation
+          <div className="text-amber-300/40 text-xs font-body tracking-wide">
+            Every story, every proverb, every gem — curated for the curious traveller.
           </div>
         </div>
       </footer>

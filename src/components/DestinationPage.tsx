@@ -367,11 +367,12 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-left">
             <div className="font-devanagari text-amber-400 font-semibold">भारत दर्शन</div>
-            <div className="text-amber-200/40 text-xs font-body">GenAI cultural discovery · Zero mock data</div>
+            <div className="text-amber-300/40 text-xs font-body tracking-wide">
+              Cultural Discovery Platform
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-amber-300/60 text-xs font-body">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            API: gemini-3.5-flash · Live generation
+          <div className="text-amber-300/40 text-xs font-body tracking-wide">
+            Every story, every proverb, every gem — curated for the curious traveller.
           </div>
         </div>
       </footer>

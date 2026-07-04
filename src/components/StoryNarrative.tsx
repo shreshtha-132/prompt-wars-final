@@ -108,7 +108,7 @@ export default function StoryNarrative({
             <div className="absolute inset-0 flex items-center justify-center text-2xl">📜</div>
           </div>
           <p className="text-sm font-body" style={{ color: 'var(--text-muted)' }}>
-            Consulting ancient scrolls & folklore archives...
+            Weaving your cultural narrative...
           </p>
         </div>
       ) : (
@@ -174,7 +174,7 @@ export default function StoryNarrative({
           <div className="flex items-center justify-between pt-4 mt-4"
             style={{ borderTop: '1px solid rgba(201,150,12,0.15)' }}>
             <span className="text-xs font-body" style={{ color: 'var(--text-muted)' }}>
-              ✦ AI-generated authentic narrative
+              ✦ Immersive cultural narrative
             </span>
             <button
               id="regenerate-narrative-btn"
