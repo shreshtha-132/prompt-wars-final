@@ -44,21 +44,21 @@ app.post("/api/destination", async (req, res) => {
     const ai = getGeminiClient();
 
     // Construct a comprehensive prompt based on user interest
-    const prompt = `You are a world-renowned cultural anthropologist, historian, and expert local curator.
-Generate an immersive cultural travel profile for the destination: "${name}".
-Ensure all recommendations are highly authentic, grounded in genuine local customs, history, and real geographical locations (no fake or hallucinated spots).
-Tailor the highlights and recommended attractions based on these traveler preferences:
+    const prompt = `You are a world-renowned Indian cultural anthropologist, historian, and expert regional curator specializing in the diverse cultures, traditions, and heritage of India (Bharat).
+Generate a deeply immersive cultural travel profile for the Indian destination: "${name}".
+This is specifically an INDIAN destination. Ensure all content is authentic, grounded in real Indian customs, history, and genuine geographical locations within India.
+Tailor recommendations based on traveler preferences:
 - Focus/Interest: ${preferences?.interest || 'history'}
 - Travel Pace: ${preferences?.pace || 'moderate'}
 - Travel Budget: ${preferences?.budget || 'moderate'}
 
 Create detailed content covering:
-1. Dynamic local proverb or saying that encapsulates the local philosophy, with translation and deep meaning.
-2. Recommended attractions specifically curated for their interest.
-3. Hidden gems that are off the beaten path, complete with high-fidelity historical storytelling, local legends, and instructions on how to experience them respectably.
-4. Local experiences like culinary encounters, artisanship, and community traditions, highlighting local etiquette.
-5. Heritage events and festivals, their deep seasonal timing, and cultural significance.
-6. A 3-question interactive cultural trivia quiz to help travelers learn local norms, folklore, and etiquette prior to arrival. Include rich explanations for correct answers.`;
+1. A local proverb or saying in the regional language (Hindi, Tamil, Bengali, Kannada, Marathi, etc. as appropriate for the region), with its transliteration, English translation, and deep philosophical meaning.
+2. 4-6 must-visit attractions curated for the traveler's interest — include temples, palaces, ghats, forts, art centers, or natural sites as appropriate. Be specific to real locations.
+3. 4 hidden gems that are genuinely off the beaten path — include the local folklore, oral legend, or mythological significance that makes the spot sacred or special. Give detailed instructions on visiting respectfully.
+4. 4 authentic local experiences — traditional crafts (block printing, Madhubani art, pottery, weaving), regional cuisine workshops, classical dance or music performances, nature experiences. Include specific etiquette: how to approach local artisans, remove footwear protocols, photography rules, tipping norms.
+5. 3-4 heritage festivals or local celebrations — include exact season or Hindu calendar timing, the religious or agricultural significance, traditional rituals, foods, attire, and processions.
+6. A 3-question interactive cultural trivia quiz on local customs, temple etiquette, folklore, or historical events. Make the correct answer explanations educational and culturally enriching.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
@@ -218,16 +218,16 @@ app.post("/api/narrative", async (req, res) => {
     }
 
     const ai = getGeminiClient();
-    const prompt = `You are an eloquent travel storyteller and essayist.
-Write a deep, sensory, narrative-focused traveler's journal entry for "${spotName}" located in ${name}, ${country || ''}.
-Context about the spot: ${spotDescription || ''}
+    const prompt = `You are a celebrated Indian travel essayist and cultural storyteller, deeply versed in the mythology, spirituality, architecture, and living traditions of Bharat (India).
+Write a deeply evocative, sensory, first-person traveler's journal entry for "${spotName}" located in ${name}, India.
+Context about this Indian site: ${spotDescription || ''}
 
-Please write in a warm, respectful, first-person journaling voice. Structure the narrative into 3 vivid, compact paragraphs:
-1. **The First Encounter**: Focus heavily on sensory details (sound, smell, atmosphere, morning mist or dusty light) as you approach the place.
-2. **The Living Ancestry**: Describe the deep-seated historic spirit, traditional whispers, or architectural detail that connects the past directly to the present.
-3. **The Silent Reflection**: An intimate lesson, insight, or moral about human connection and cultural inheritance learned by visiting this spot.
+Write in a warm, poetic, respectful voice that honors the spiritual and historical weight of this Indian location. Structure into 3 vivid paragraphs:
+1. **The Arrival**: Describe the sensory experience of approaching — the smell of incense or marigolds, the sound of temple bells or street vendors, the texture of old stone or cool river water, the golden light of dawn or dusk.
+2. **The Living Spirit**: Describe how centuries of devotion, craftsmanship, or history are still palpable today — in the architecture's carvings, in the rituals of local worshippers, in the oral stories passed down through generations.
+3. **The Takeaway**: An intimate cultural lesson or philosophical insight learned here — about impermanence, community, devotion, or the extraordinary richness of Indian civilizational heritage.
 
-Return only the narrative prose with beautiful markdown paragraphs. Do not add titles, headers, or generic wrapup text.`;
+Return only the narrative prose. Do not add titles, headers, or generic wrapup text. Make every sentence lyrical and specific to India.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.5-flash",
@@ -252,16 +252,18 @@ app.post("/api/chat", async (req, res) => {
 
     const ai = getGeminiClient();
 
-    let systemInstruction = `You are "Scribe", a deeply wise, polite, and well-traveled Cultural Concierge and Local Assistant.
-Your mission is to help travelers engage with the local community responsibly, respectfully, and authentically.
-Use your vast knowledge of history, language, philosophy, and cultural etiquette.`;
+    let systemInstruction = `You are "Pandit Ji", a deeply wise, warm, and knowledgeable Cultural Concierge specializing in Incredible India.
+Your mission is to help travelers explore India respectfully, authentically, and meaningfully.
+You are well-versed in Indian history, classical arts (Bharatanatyam, Kathak, Carnatic music), regional languages and greetings, Hindu and other religious customs, Ayurveda, regional cuisines, traditional crafts, and the deep philosophical traditions of India (Vedanta, Buddhism, Jainism, Sufism).
+Always greet with Namaste. Offer practical, hyper-local advice. Give responses in a warm, slightly lyrical, knowledgeable tone. Suggest authentic experiences, not tourist traps.
+When relevant, teach travelers useful Hindi or regional language phrases. Explain the 'why' behind customs (e.g., why we remove footwear, why we offer prasad, why we circle a temple clockwise).`;
 
     if (destinationContext) {
       systemInstruction += `\nCurrently, the traveler is exploring "${destinationContext.name}" in ${destinationContext.country}.
-Context of this destination:
-- Summary: ${destinationContext.summary}
-- Local Philosophy/Proverb: "${destinationContext.localProverb?.text}" (meaning: ${destinationContext.localProverb?.meaning})
-Provide highly localized advice, respectful greetings in their native tongue, custom etiquettes (e.g., shoe removal, tipping conventions, temple gestures), and avoid tourist-trap commercial recommendations.`;
+Destination context:
+- Cultural Summary: ${destinationContext.summary}
+- Local Proverb: "${destinationContext.localProverb?.text}" (meaning: ${destinationContext.localProverb?.meaning})
+Provide hyper-local advice specific to ${destinationContext.name}: temple protocols, local greetings in the regional language, specific dishes to try, respectful dress codes, how to interact with artisans, and any unique cultural sensitivities of this specific region of India.`;
     }
 
     // Map conversation array to the expected SDK format

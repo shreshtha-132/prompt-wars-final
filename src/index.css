@@ -1,8 +1,538 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+/* ============================================================
+   BHARAT DARSHAN — Indian Maximalism Design System
+   ============================================================ */
+
+:root {
+  /* Color Tokens */
+  --saffron: #E8841A;
+  --saffron-light: #f5a543;
+  --saffron-dark: #c46c0f;
+  --crimson: #9B1C1C;
+  --crimson-light: #c62828;
+  --crimson-dark: #6b0f0f;
+  --gold: #C9960C;
+  --gold-light: #e6b020;
+  --gold-dark: #a07808;
+  --teal: #0E5F6C;
+  --teal-light: #1a8a9c;
+  --teal-dark: #0a4350;
+  --parchment: #FDF6E3;
+  --parchment-dark: #f5e8c7;
+  --ivory: #FFFEF7;
+  --maroon: #5c1010;
+  --text-dark: #2D1206;
+  --text-medium: #5c3317;
+  --text-muted: #8b6240;
+
+  /* Font Families */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Poppins', system-ui, sans-serif;
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+
+  /* Shadows */
+  --shadow-saffron: 0 8px 32px rgba(232, 132, 26, 0.25);
+  --shadow-crimson: 0 8px 32px rgba(155, 28, 28, 0.2);
+  --shadow-gold: 0 4px 20px rgba(201, 150, 12, 0.3);
+  --shadow-card: 0 2px 16px rgba(45, 18, 6, 0.08);
 }
 
+/* ============================================================
+   GLOBAL RESETS & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--parchment);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.font-display { font-family: var(--font-display); }
+.font-devanagari { font-family: var(--font-devanagari); }
+.font-body { font-family: var(--font-body); }
+
+/* ============================================================
+   INDIAN ORNAMENTAL ELEMENTS
+   ============================================================ */
+
+/* Top decorative border strip — repeating saffron/gold/crimson */
+.india-border-strip {
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--saffron) 0px,
+    var(--saffron) 14px,
+    var(--gold) 14px,
+    var(--gold) 28px,
+    var(--crimson) 28px,
+    var(--crimson) 42px,
+    var(--gold) 42px,
+    var(--gold) 56px
+  );
+}
+
+/* Ornate section divider — lotus motif using CSS */
+.lotus-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.lotus-divider::before,
+.lotus-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Paisley background texture for hero sections */
+.hero-bg {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(155, 28, 28, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(14, 95, 108, 0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 60% 80%, rgba(92, 16, 16, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #1a0505 0%, #2d0c08 40%, #0a1f26 100%);
+}
+
+/* Parchment texture background */
+.parchment-bg {
+  background-color: var(--parchment);
+  background-image:
+    radial-gradient(ellipse at 10% 20%, rgba(232, 132, 26, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(201, 150, 12, 0.06) 0%, transparent 50%);
+}
+
+/* Gold shimmer border */
+.border-gold {
+  border-color: var(--gold);
+}
+.border-saffron {
+  border-color: var(--saffron);
+}
+
+/* ============================================================
+   CARDS — Indian aesthetic
+   ============================================================ */
+.india-card {
+  background: var(--ivory);
+  border: 1px solid rgba(201, 150, 12, 0.25);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.india-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-saffron);
+  border-color: rgba(232, 132, 26, 0.5);
+}
+
+/* Destination feature card */
+.dest-card {
+  background: var(--ivory);
+  border: 1px solid rgba(201, 150, 12, 0.2);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+}
+.dest-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--saffron), var(--gold), var(--crimson));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dest-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-saffron);
+  border-color: rgba(232, 132, 26, 0.5);
+}
+.dest-card:hover::before {
+  opacity: 1;
+}
+
+/* ============================================================
+   BUTTONS — Indian aesthetic
+   ============================================================ */
+.btn-saffron {
+  background: linear-gradient(135deg, var(--saffron) 0%, var(--saffron-dark) 100%);
+  color: white;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(232, 132, 26, 0.4);
+}
+.btn-saffron:hover {
+  background: linear-gradient(135deg, var(--saffron-light) 0%, var(--saffron) 100%);
+  box-shadow: 0 6px 20px rgba(232, 132, 26, 0.5);
+  transform: translateY(-1px);
+}
+.btn-saffron:active {
+  transform: translateY(0);
+}
+
+.btn-crimson {
+  background: linear-gradient(135deg, var(--crimson) 0%, var(--crimson-dark) 100%);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(155, 28, 28, 0.35);
+}
+.btn-crimson:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(155, 28, 28, 0.45);
+}
+
+.btn-teal {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(14, 95, 108, 0.35);
+}
+.btn-teal:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(14, 95, 108, 0.45);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid rgba(201, 150, 12, 0.4);
+  color: var(--gold-dark);
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.btn-ghost:hover {
+  background: rgba(201, 150, 12, 0.08);
+  border-color: var(--gold);
+  color: var(--gold-dark);
+}
+
+/* ============================================================
+   BADGES — Category tags
+   ============================================================ */
+.badge-spiritual { background: rgba(155, 28, 28, 0.1); color: var(--crimson); border: 1px solid rgba(155, 28, 28, 0.25); }
+.badge-heritage  { background: rgba(201, 150, 12, 0.12); color: var(--gold-dark); border: 1px solid rgba(201, 150, 12, 0.3); }
+.badge-nature    { background: rgba(14, 95, 108, 0.1); color: var(--teal); border: 1px solid rgba(14, 95, 108, 0.25); }
+.badge-culinary  { background: rgba(232, 132, 26, 0.1); color: var(--saffron-dark); border: 1px solid rgba(232, 132, 26, 0.3); }
+.badge-adventure { background: rgba(45, 18, 6, 0.08); color: var(--text-medium); border: 1px solid rgba(45, 18, 6, 0.2); }
+.badge-cultural  { background: rgba(92, 16, 16, 0.1); color: var(--maroon); border: 1px solid rgba(92, 16, 16, 0.25); }
+.badge-coastal   { background: rgba(14, 95, 108, 0.12); color: var(--teal-dark); border: 1px solid rgba(14, 95, 108, 0.3); }
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-title {
+  font-family: var(--font-display);
+  color: var(--text-dark);
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--saffron), var(--gold), transparent);
+  margin-top: 6px;
+}
+
+/* ============================================================
+   SEARCH INPUT
+   ============================================================ */
+.india-search {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(232, 132, 26, 0.5);
+  color: white;
+  font-family: var(--font-body);
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+.india-search::placeholder { color: rgba(255, 255, 255, 0.55); }
+.india-search:focus {
+  outline: none;
+  border-color: var(--saffron);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 4px rgba(232, 132, 26, 0.2), 0 4px 20px rgba(232, 132, 26, 0.3);
+}
+
+/* ============================================================
+   TAB NAVIGATION
+   ============================================================ */
+.tab-nav {
+  display: flex;
+  gap: 0;
+  background: var(--ivory);
+  border: 1px solid rgba(201, 150, 12, 0.2);
+  border-radius: 999px;
+  padding: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.tab-btn:hover {
+  color: var(--text-dark);
+  background: rgba(232, 132, 26, 0.08);
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+  color: white;
+  box-shadow: 0 2px 12px rgba(232, 132, 26, 0.35);
+  font-weight: 600;
+}
+
+/* ============================================================
+   SCROLLBAR — Indian themed
+   ============================================================ */
+.custom-scroll { scrollbar-width: thin; scrollbar-color: var(--gold) transparent; }
+.custom-scroll::-webkit-scrollbar { width: 5px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--saffron), var(--gold));
+  border-radius: 10px;
+}
+
+/* ============================================================
+   CHAT MESSAGES
+   ============================================================ */
+.chat-model {
+  background: var(--ivory);
+  border: 1px solid rgba(201, 150, 12, 0.2);
+  color: var(--text-dark);
+  border-radius: 1rem;
+  border-top-left-radius: 4px;
+}
+.chat-user {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-dark));
+  color: white;
+  border-radius: 1rem;
+  border-top-right-radius: 4px;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes bloom {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes slide-up {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes wave-bar {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(232, 132, 26, 0.4); }
+  50% { box-shadow: 0 0 24px rgba(232, 132, 26, 0.8); }
+}
+
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-bloom { animation: bloom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-slide-up { animation: slide-up 0.6s ease forwards; }
+.animate-fade-in { animation: fade-in 0.4s ease forwards; }
+.animate-spin-slow { animation: spin-slow 12s linear infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* Staggered slide-up for cards */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* Wave bars for audio viz */
+.wave-bar {
+  width: 3px;
+  background: var(--saffron);
+  border-radius: 4px;
+  transform-origin: bottom;
+}
+.wave-bar.playing { animation: wave-bar 0.8s ease-in-out infinite; }
+.wave-bar:nth-child(1) { animation-delay: 0s; height: 10px; }
+.wave-bar:nth-child(2) { animation-delay: 0.1s; height: 18px; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; height: 14px; }
+.wave-bar:nth-child(4) { animation-delay: 0.05s; height: 22px; }
+.wave-bar:nth-child(5) { animation-delay: 0.15s; height: 16px; }
+.wave-bar:nth-child(6) { animation-delay: 0.25s; height: 12px; }
+.wave-bar:nth-child(7) { animation-delay: 0.1s; height: 20px; }
+.wave-bar:nth-child(8) { animation-delay: 0.2s; height: 8px; }
+
+/* ============================================================
+   PROVERB BLOCK
+   ============================================================ */
+.proverb-block {
+  background: linear-gradient(135deg, rgba(155, 28, 28, 0.06) 0%, rgba(201, 150, 12, 0.06) 100%);
+  border: 1px solid rgba(201, 150, 12, 0.25);
+  border-left: 4px solid var(--saffron);
+  border-radius: 0.75rem;
+  position: relative;
+}
+.proverb-block::before {
+  content: '"';
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  font-family: var(--font-display);
+  font-size: 64px;
+  color: var(--gold);
+  opacity: 0.3;
+  line-height: 1;
+}
+
+/* ============================================================
+   LOADING SPINNER — Mandala style
+   ============================================================ */
+.mandala-spinner {
+  width: 64px;
+  height: 64px;
+  border: 3px solid rgba(232, 132, 26, 0.2);
+  border-top-color: var(--saffron);
+  border-right-color: var(--gold);
+  border-radius: 50%;
+  animation: spin-slow 1.2s linear infinite;
+}
+
+/* ============================================================
+   STORY NARRATIVE — parchment scroll
+   ============================================================ */
+.story-scroll {
+  background: linear-gradient(180deg, #fefaf0 0%, #fdf6e3 50%, #fefaf0 100%);
+  border: 1px solid rgba(201, 150, 12, 0.3);
+}
+.story-drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.75;
+  margin-right: 8px;
+  margin-top: 4px;
+  color: var(--crimson);
+}
+
+/* ============================================================
+   TRIVIA OPTION BUTTONS
+   ============================================================ */
+.trivia-option {
+  background: var(--ivory);
+  border: 1.5px solid rgba(201, 150, 12, 0.2);
+  color: var(--text-dark);
+  text-align: left;
+  transition: all 0.2s ease;
+  font-family: var(--font-body);
+}
+.trivia-option:hover:not(:disabled) {
+  border-color: var(--saffron);
+  background: rgba(232, 132, 26, 0.06);
+}
+.trivia-option.correct {
+  background: rgba(21, 128, 61, 0.1);
+  border-color: #15803d;
+  color: #14532d;
+}
+.trivia-option.wrong {
+  background: rgba(155, 28, 28, 0.08);
+  border-color: var(--crimson);
+  color: var(--crimson-dark);
+}
+.trivia-option.dimmed {
+  opacity: 0.45;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.india-nav {
+  background: linear-gradient(90deg, #1a0505 0%, #2d0c08 50%, #0a1f26 100%);
+  border-bottom: 1px solid rgba(201, 150, 12, 0.2);
+}
+
+/* ============================================================
+   MODAL OVERLAY
+   ============================================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 5, 5, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fade-in 0.3s ease;
+}
+.modal-content {
+  background: var(--parchment);
+  border: 1px solid rgba(201, 150, 12, 0.3);
+  border-radius: 1.5rem;
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: bloom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 25px 60px rgba(26, 5, 5, 0.4), 0 0 0 1px rgba(201, 150, 12, 0.15);
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   ============================================================ */
+@media (max-width: 640px) {
+  .tab-btn { padding: 7px 12px; font-size: 12px; }
+  .hero-title { font-size: 2.5rem !important; }
+}

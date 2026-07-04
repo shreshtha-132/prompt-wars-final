@@ -1,150 +1,164 @@
 import React from 'react';
-import { Calendar, UserCheck, HeartHandshake, ShieldAlert, BookOpen } from 'lucide-react';
+import { UserCheck, ShieldAlert, Calendar, Star } from 'lucide-react';
 import { LocalExperience, HeritageEvent } from '../types';
 
 interface ExperienceLogProps {
   experiences: LocalExperience[];
   events: HeritageEvent[];
+  showEvents: boolean;
 }
 
-export default function ExperienceLog({ experiences, events }: ExperienceLogProps) {
-  const getTypeBadge = (type: LocalExperience['type']) => {
-    switch (type) {
-      case 'artisanship':
-        return 'text-violet-600 bg-violet-50 border-violet-200';
-      case 'culinary':
-        return 'text-rose-600 bg-rose-50 border-rose-200';
-      case 'performance':
-        return 'text-amber-600 bg-amber-50 border-amber-200';
-      case 'nature':
-        return 'text-sky-600 bg-sky-50 border-sky-200';
-      case 'community':
-        return 'text-emerald-600 bg-emerald-50 border-emerald-200';
-      default:
-        return 'text-slate-600 bg-slate-50 border-slate-200';
+const TYPE_CONFIG: Record<string, { label: string; emoji: string; badgeClass: string }> = {
+  artisanship: { label: 'Artisanship', emoji: '🪡', badgeClass: 'badge-cultural' },
+  culinary:    { label: 'Culinary',    emoji: '🍛', badgeClass: 'badge-culinary' },
+  performance: { label: 'Performance', emoji: '🎭', badgeClass: 'badge-cultural' },
+  nature:      { label: 'Nature',      emoji: '🌿', badgeClass: 'badge-nature'   },
+  community:   { label: 'Community',   emoji: '🤝', badgeClass: 'badge-spiritual' },
+};
+
+export default function ExperienceLog({ experiences, events, showEvents }: ExperienceLogProps) {
+  if (!showEvents) {
+    // Render experiences
+    if (experiences.length === 0) {
+      return (
+        <div className="text-center py-12 font-body" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-4xl mb-3">🎭</div>
+          <p>No local experiences listed for this destination.</p>
+        </div>
+      );
     }
-  };
+
+    return (
+      <div id="experience-log-wrapper" className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {experiences.map((exp, idx) => {
+          const config = TYPE_CONFIG[exp.type] || { label: exp.type, emoji: '✨', badgeClass: 'badge-adventure' };
+          return (
+            <div
+              key={exp.id}
+              id={`experience-card-${exp.id}`}
+              className="india-card p-5 flex flex-col animate-slide-up"
+              style={{ animationDelay: `${idx * 0.06}s`, opacity: 0, animationFillMode: 'forwards' }}
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex-1">
+                  <span className={`text-[10px] font-body font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${config.badgeClass}`}>
+                    {config.emoji} {config.label}
+                  </span>
+                  <h3 className="font-display font-bold text-lg mt-2" style={{ color: 'var(--text-dark)' }}>
+                    {exp.title}
+                  </h3>
+                </div>
+              </div>
+
+              <p className="text-sm font-body leading-relaxed mb-4 flex-1" style={{ color: 'var(--text-medium)' }}>
+                {exp.description}
+              </p>
+
+              <div className="space-y-3">
+                {/* How to connect */}
+                <div className="rounded-xl p-3"
+                  style={{ background: 'rgba(14,95,108,0.06)', border: '1px solid rgba(14,95,108,0.15)' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <UserCheck size={11} style={{ color: 'var(--teal)' }} />
+                    <span className="text-[10px] font-body font-semibold uppercase tracking-wider"
+                      style={{ color: 'var(--teal)' }}>How to Connect</span>
+                  </div>
+                  <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                    {exp.howToConnect}
+                  </p>
+                </div>
+
+                {/* Cultural etiquette */}
+                <div className="rounded-xl p-3"
+                  style={{ background: 'rgba(232,132,26,0.06)', border: '1px solid rgba(232,132,26,0.15)' }}>
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <ShieldAlert size={11} style={{ color: 'var(--saffron)' }} />
+                    <span className="text-[10px] font-body font-semibold uppercase tracking-wider"
+                      style={{ color: 'var(--saffron)' }}>Cultural Etiquette</span>
+                  </div>
+                  <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                    {exp.culturalEtiquette}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Render events / festivals
+  if (events.length === 0) {
+    return (
+      <div className="text-center py-12 font-body" style={{ color: 'var(--text-muted)' }}>
+        <div className="text-4xl mb-3">🎊</div>
+        <p>No festivals or events listed for this destination.</p>
+      </div>
+    );
+  }
 
   return (
-    <div id="experience-log-wrapper" className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* 1. Authentic Cultural Experiences */}
-      <div id="authentic-experiences-container" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <HeartHandshake className="text-blue-600" size={18} />
-            <h3 className="text-base font-bold font-sans text-slate-900">
-              Community Connections & Experiences
-            </h3>
-          </div>
-          <span className="text-xs font-mono text-slate-400">Local Workshops</span>
-        </div>
-
-        {experiences.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-500">
-            No cultural experiences listed. Try searching for a destination.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {experiences.map((exp) => (
-              <div
-                key={exp.id}
-                id={`experience-card-${exp.id}`}
-                className="bg-white border border-slate-200 rounded-xl p-5 space-y-4 hover:border-slate-300 transition-all shadow-sm"
-              >
-                <div>
-                  <div className="flex justify-between items-start gap-2">
-                    <h4 className="text-sm font-bold text-slate-900">{exp.title}</h4>
-                    <span className={`text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded border ${getTypeBadge(exp.type)}`}>
-                      {exp.type}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-600 mt-2">{exp.description}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-slate-100">
-                  <div className="space-y-1">
-                    <span className="flex items-center gap-1 text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider">
-                      <UserCheck size={10} className="text-blue-600" />
-                      How to Connect
-                    </span>
-                    <p className="text-[11px] text-slate-700 leading-normal">{exp.howToConnect}</p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <span className="flex items-center gap-1 text-[10px] font-mono font-semibold text-slate-400 uppercase tracking-wider">
-                      <ShieldAlert size={10} className="text-amber-600" />
-                      Social Etiquette
-                    </span>
-                    <p className="text-[11px] text-amber-800 leading-normal font-sans">{exp.culturalEtiquette}</p>
-                  </div>
-                </div>
+    <div id="heritage-events-container" className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {events.map((evt, idx) => (
+        <div
+          key={evt.id}
+          id={`event-card-${evt.id}`}
+          className="india-card p-5 flex flex-col animate-slide-up"
+          style={{ animationDelay: `${idx * 0.06}s`, opacity: 0, animationFillMode: 'forwards' }}
+        >
+          {/* Header */}
+          <div className="flex items-start justify-between gap-2 mb-3">
+            <div className="flex-1">
+              <h3 className="font-display font-bold text-xl leading-tight" style={{ color: 'var(--text-dark)' }}>
+                {evt.name}
+              </h3>
+              <div className="flex items-center gap-1.5 mt-2">
+                <Calendar size={11} style={{ color: 'var(--saffron)' }} />
+                <span className="text-xs font-body px-2.5 py-0.5 rounded-full badge-culinary">
+                  {evt.timeOfYear}
+                </span>
               </div>
-            ))}
+            </div>
+            <div className="text-3xl" style={{ opacity: 0.7 }}>🎊</div>
           </div>
-        )}
-      </div>
 
-      {/* 2. Traditional Ceremonies & Festivals */}
-      <div id="heritage-events-container" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <Calendar className="text-blue-600" size={18} />
-            <h3 className="text-base font-bold font-sans text-slate-900">
-              Heritage Festivals & seasonal events
-            </h3>
+          {/* Significance */}
+          <div className="rounded-xl p-3 mb-3 flex-1"
+            style={{ background: 'rgba(155,28,28,0.05)', border: '1px solid rgba(155,28,28,0.12)' }}>
+            <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+              style={{ color: 'var(--crimson)' }}>
+              ✦ Cultural Significance
+            </div>
+            <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+              {evt.significance}
+            </p>
           </div>
-          <span className="text-xs font-mono text-slate-400">Living Celebrations</span>
-        </div>
 
-        {events.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-500">
-            No local festivals loaded. Provide a region above to explore cycles.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {events.map((evt) => (
-              <div
-                key={evt.id}
-                id={`event-card-${evt.id}`}
-                className="bg-white border border-slate-200 rounded-xl p-5 hover:border-slate-300 transition-all space-y-3 shadow-sm"
-              >
-                <div className="flex justify-between items-start gap-2">
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">{evt.name}</h4>
-                    <span className="text-[10px] font-mono text-blue-700 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded inline-block mt-1">
-                      {evt.timeOfYear}
-                    </span>
-                  </div>
-                  <BookOpen size={14} className="text-slate-400" />
-                </div>
-
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  <span className="font-semibold text-slate-500">Significance:</span> {evt.significance}
-                </p>
-
-                {evt.localTraditions && evt.localTraditions.length > 0 && (
-                  <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-3">
-                    <span className="block text-[9px] font-mono font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
-                      Rituals, Foods, or Attire
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {evt.localTraditions.map((trad, idx) => (
-                        <span
-                          key={idx}
-                          id={`tradition-tag-${evt.id}-${idx}`}
-                          className="text-[10px] text-slate-600 bg-white border border-slate-250 px-2 py-0.5 rounded-md"
-                        >
-                          {trad}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+          {/* Traditions as tags */}
+          {evt.localTraditions && evt.localTraditions.length > 0 && (
+            <div>
+              <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5"
+                style={{ color: 'var(--gold-dark)' }}>
+                <Star size={10} fill="currentColor" />
+                Rituals, Foods & Traditions
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              <div className="flex flex-wrap gap-1.5">
+                {evt.localTraditions.map((trad, i) => (
+                  <span
+                    key={i}
+                    id={`tradition-tag-${evt.id}-${i}`}
+                    className="text-[11px] font-body px-2.5 py-1 rounded-full"
+                    style={{ background: 'rgba(201,150,12,0.1)', border: '1px solid rgba(201,150,12,0.2)', color: 'var(--gold-dark)' }}>
+                    {trad}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

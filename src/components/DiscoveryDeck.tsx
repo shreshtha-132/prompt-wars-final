@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bookmark, Sparkles, AlertCircle, MapPin, Feather, Heart } from 'lucide-react';
+import { MapPin, Feather, Heart, BookOpen, Eye } from 'lucide-react';
 import { Attraction, HiddenGem } from '../types';
 
 interface DiscoveryDeckProps {
@@ -10,7 +10,18 @@ interface DiscoveryDeckProps {
   onToggleSaveAttraction: (id: string) => void;
   onToggleSaveGem: (id: string) => void;
   onSelectStorySpot: (spotName: string, spotDescription: string) => void;
+  showGems: boolean;
 }
+
+const getCategoryStyle = (category: string): string => {
+  const c = category?.toLowerCase() || '';
+  if (c.includes('spiritual') || c.includes('temple') || c.includes('religious')) return 'badge-spiritual';
+  if (c.includes('culinary') || c.includes('food')) return 'badge-culinary';
+  if (c.includes('nature') || c.includes('forest') || c.includes('wildlife')) return 'badge-nature';
+  if (c.includes('art') || c.includes('music') || c.includes('dance')) return 'badge-cultural';
+  if (c.includes('heritage') || c.includes('palace') || c.includes('fort')) return 'badge-heritage';
+  return 'badge-adventure';
+};
 
 export default function DiscoveryDeck({
   attractions,
@@ -20,205 +31,233 @@ export default function DiscoveryDeck({
   onToggleSaveAttraction,
   onToggleSaveGem,
   onSelectStorySpot,
+  showGems,
 }: DiscoveryDeckProps) {
+
+  if (!showGems) {
+    // Render attractions only
+    if (attractions.length === 0) {
+      return (
+        <div className="text-center py-12 font-body" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-4xl mb-3">🏛️</div>
+          <p>No attractions generated for this destination.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div id="discovery-deck-root" className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {attractions.map((attr, idx) => {
+          const isSaved = savedAttractionIds.includes(attr.id);
+          return (
+            <div
+              key={attr.id}
+              id={`attraction-card-${attr.id}`}
+              className="india-card p-5 flex flex-col animate-slide-up"
+              style={{ animationDelay: `${idx * 0.06}s`, opacity: 0, animationFillMode: 'forwards' }}
+            >
+              {/* Card header */}
+              <div className="flex items-start justify-between gap-2 mb-3">
+                <div className="flex-1 min-w-0">
+                  <span className={`text-[10px] font-body font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${getCategoryStyle(attr.category)}`}>
+                    {attr.category || 'Cultural Site'}
+                  </span>
+                  <h3 className="font-display font-bold text-lg mt-2 leading-tight"
+                    style={{ color: 'var(--text-dark)' }}>
+                    {attr.name}
+                  </h3>
+                  <div className="flex items-center gap-1 mt-1">
+                    <MapPin size={10} style={{ color: 'var(--saffron)' }} />
+                    <span className="text-xs font-body" style={{ color: 'var(--text-muted)' }}>{attr.location}</span>
+                  </div>
+                </div>
+                <button
+                  id={`save-attr-btn-${attr.id}`}
+                  onClick={() => onToggleSaveAttraction(attr.id)}
+                  className="p-2 rounded-full transition-all shrink-0"
+                  style={{
+                    background: isSaved ? 'rgba(155,28,28,0.1)' : 'transparent',
+                    border: `1px solid ${isSaved ? 'rgba(155,28,28,0.3)' : 'rgba(201,150,12,0.2)'}`,
+                    color: isSaved ? 'var(--crimson)' : 'var(--text-muted)',
+                  }}
+                  title={isSaved ? 'Remove bookmark' : 'Bookmark this place'}
+                >
+                  <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} />
+                </button>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm font-body leading-relaxed mb-4"
+                style={{ color: 'var(--text-medium)' }}>
+                {attr.description}
+              </p>
+
+              {/* Historical significance */}
+              <div className="rounded-xl p-3 mb-3 flex-1"
+                style={{ background: 'rgba(232,132,26,0.06)', border: '1px solid rgba(232,132,26,0.15)' }}>
+                <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+                  style={{ color: 'var(--saffron)' }}>
+                  ✦ Historical Significance
+                </div>
+                <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                  {attr.historicalSignificance}
+                </p>
+              </div>
+
+              {/* Visitor tip */}
+              <div className="rounded-xl p-3 mb-4"
+                style={{ background: 'rgba(14,95,108,0.06)', border: '1px solid rgba(14,95,108,0.15)' }}>
+                <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+                  style={{ color: 'var(--teal)' }}>
+                  🙏 Visitor Etiquette
+                </div>
+                <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                  {attr.visitorTip}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-between pt-3"
+                style={{ borderTop: '1px solid rgba(201,150,12,0.15)' }}>
+                <div className="flex items-center gap-1 text-xs font-body" style={{ color: 'var(--text-muted)' }}>
+                  <BookOpen size={11} />
+                  <span>Authentic site</span>
+                </div>
+                <button
+                  id={`narrative-btn-${attr.id}`}
+                  onClick={() => onSelectStorySpot(attr.name, attr.description)}
+                  className="flex items-center gap-1.5 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(232,132,26,0.1), rgba(201,150,12,0.1))',
+                    border: '1px solid rgba(232,132,26,0.3)',
+                    color: 'var(--saffron-dark)',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, var(--saffron), var(--saffron-dark))';
+                    (e.currentTarget as HTMLButtonElement).style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, rgba(232,132,26,0.1), rgba(201,150,12,0.1))';
+                    (e.currentTarget as HTMLButtonElement).style.color = 'var(--saffron-dark)';
+                  }}
+                >
+                  <Feather size={12} />
+                  Read Story
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Render hidden gems only
+  if (hiddenGems.length === 0) {
+    return (
+      <div className="text-center py-12 font-body" style={{ color: 'var(--text-muted)' }}>
+        <div className="text-4xl mb-3">💎</div>
+        <p>No hidden gems found for this destination.</p>
+      </div>
+    );
+  }
+
   return (
-    <div id="discovery-deck-root" className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* 1. Tailored Attractions */}
-      <div id="tailored-attractions-section" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="text-blue-600" size={18} />
-            <h3 className="text-base font-bold font-sans text-slate-900">
-              Curated Cultural Attractions
-            </h3>
-          </div>
-          <span className="text-xs font-mono bg-slate-100 border border-slate-200/60 px-2 py-0.5 rounded text-slate-600">
-            {attractions.length} Recommendations
-          </span>
-        </div>
+    <div id="hidden-gems-root" className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {hiddenGems.map((gem, idx) => {
+        const isSaved = savedGemIds.includes(gem.id);
+        return (
+          <div
+            key={gem.id}
+            id={`gem-card-${gem.id}`}
+            className="india-card p-5 flex flex-col animate-slide-up"
+            style={{ animationDelay: `${idx * 0.06}s`, opacity: 0, animationFillMode: 'forwards' }}
+          >
+            <div className="flex items-start justify-between gap-2 mb-3">
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-body font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full badge-heritage">
+                  💎 Rare Cultural Encounter
+                </span>
+                <h3 className="font-display font-bold text-lg mt-2 leading-tight"
+                  style={{ color: 'var(--text-dark)' }}>
+                  {gem.name}
+                </h3>
+              </div>
+              <button
+                id={`save-gem-btn-${gem.id}`}
+                onClick={() => onToggleSaveGem(gem.id)}
+                className="p-2 rounded-full transition-all shrink-0"
+                style={{
+                  background: isSaved ? 'rgba(155,28,28,0.1)' : 'transparent',
+                  border: `1px solid ${isSaved ? 'rgba(155,28,28,0.3)' : 'rgba(201,150,12,0.2)'}`,
+                  color: isSaved ? 'var(--crimson)' : 'var(--text-muted)',
+                }}
+              >
+                <Heart size={14} fill={isSaved ? 'currentColor' : 'none'} />
+              </button>
+            </div>
 
-        {attractions.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-500">
-            No attractions generated. Try searching for a destination.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {attractions.map((attr) => {
-              const isSaved = savedAttractionIds.includes(attr.id);
-              return (
-                <div
-                  key={attr.id}
-                  id={`attraction-card-${attr.id}`}
-                  className="bg-white border border-slate-200 rounded-xl p-5 hover:border-slate-300 shadow-sm transition-all flex flex-col justify-between group"
-                >
-                  <div>
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <span className="inline-block text-[10px] font-semibold font-mono uppercase bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md mb-2 border border-blue-100">
-                          {attr.category || 'Cultural Site'}
-                        </span>
-                        <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                          {attr.name}
-                        </h4>
-                      </div>
-                      <button
-                        onClick={() => onToggleSaveAttraction(attr.id)}
-                        id={`save-attr-btn-${attr.id}`}
-                        className={`p-1.5 rounded-lg transition-all ${
-                          isSaved 
-                            ? 'text-rose-500 bg-rose-50 border border-rose-200' 
-                            : 'text-slate-400 hover:text-slate-600 bg-slate-50 border border-slate-200'
-                        }`}
-                        title={isSaved ? "Remove from Travel Diary" : "Bookmark to Travel Diary"}
-                      >
-                        <Heart size={14} fill={isSaved ? "currentColor" : "none"} />
-                      </button>
-                    </div>
+            <p className="text-sm font-body leading-relaxed mb-4" style={{ color: 'var(--text-medium)' }}>
+              {gem.description}
+            </p>
 
-                    <p className="text-xs text-slate-600 mt-2 line-clamp-3">
-                      {attr.description}
-                    </p>
+            {/* Cultural story */}
+            <div className="rounded-xl p-3 mb-3 flex-1 relative overflow-hidden"
+              style={{ background: 'rgba(155,28,28,0.05)', border: '1px solid rgba(155,28,28,0.15)', borderLeft: '3px solid var(--crimson)' }}>
+              <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--crimson)' }}>
+                📜 Folklore & Oral History
+              </div>
+              <p className="text-xs font-body leading-relaxed italic" style={{ color: 'var(--text-medium)' }}>
+                "{gem.culturalStory}"
+              </p>
+            </div>
 
-                    <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-3 mt-4 space-y-2">
-                      <div className="text-[11px] text-slate-700">
-                        <span className="font-semibold text-slate-400 block uppercase tracking-wider text-[9px] font-mono">
-                          Historical Legacy
-                        </span>
-                        {attr.historicalSignificance}
-                      </div>
-
-                      <div className="text-[11px] text-slate-700 flex items-start gap-1.5 pt-1.5 border-t border-slate-200/60">
-                        <AlertCircle size={12} className="text-blue-600 shrink-0 mt-0.5" />
-                        <div>
-                          <span className="font-semibold text-slate-400 block uppercase tracking-wider text-[9px] font-mono">
-                            Visitor Etiquette & Tip
-                          </span>
-                          {attr.visitorTip}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                    <div className="flex items-center text-[11px] text-slate-500 gap-1 font-mono">
-                      <MapPin size={11} className="text-slate-400" />
-                      {attr.location}
-                    </div>
-
-                    <button
-                      onClick={() => onSelectStorySpot(attr.name, attr.description)}
-                      id={`narrative-btn-${attr.id}`}
-                      className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 font-mono font-bold py-1 px-2.5 rounded hover:bg-blue-50 transition-all"
-                    >
-                      <Feather size={12} />
-                      Weave Journal Story
-                    </button>
-                  </div>
+            {/* Local legend */}
+            {gem.localLegend && (
+              <div className="rounded-xl p-3 mb-3"
+                style={{ background: 'rgba(201,150,12,0.08)', border: '1px solid rgba(201,150,12,0.2)' }}>
+                <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+                  style={{ color: 'var(--gold-dark)' }}>
+                  🌙 Local Whispers & Lore
                 </div>
-              );
-            })}
+                <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                  {gem.localLegend}
+                </p>
+              </div>
+            )}
+
+            {/* How to experience */}
+            <div className="rounded-xl p-3 mb-4"
+              style={{ background: 'rgba(14,95,108,0.06)', border: '1px solid rgba(14,95,108,0.15)' }}>
+              <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-1.5"
+                style={{ color: 'var(--teal)' }}>
+                🙏 How to Visit Respectfully
+              </div>
+              <p className="text-xs font-body leading-relaxed" style={{ color: 'var(--text-medium)' }}>
+                {gem.howToExperience}
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end pt-3"
+              style={{ borderTop: '1px solid rgba(201,150,12,0.15)' }}>
+              <button
+                id={`narrative-gem-btn-${gem.id}`}
+                onClick={() => onSelectStorySpot(gem.name, gem.description + '. ' + (gem.localLegend || ''))}
+                className="flex items-center gap-1.5 text-xs font-body font-semibold px-3 py-1.5 rounded-full transition-all"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(232,132,26,0.1), rgba(201,150,12,0.1))',
+                  border: '1px solid rgba(232,132,26,0.3)',
+                  color: 'var(--saffron-dark)',
+                }}
+              >
+                <Feather size={12} />
+                Weave a Story
+              </button>
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* 2. Hidden Gems Section */}
-      <div id="hidden-gems-section" className="space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <Feather className="text-blue-600" size={18} />
-            <h3 className="text-base font-bold font-sans text-slate-900">
-              Uncovered Hidden Gems
-            </h3>
-          </div>
-          <span className="text-xs font-mono bg-slate-100 border border-slate-200/60 px-2 py-0.5 rounded text-slate-600">
-            Off-The-Beaten-Path
-          </span>
-        </div>
-
-        {hiddenGems.length === 0 ? (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-center text-slate-500">
-            No hidden treasures uncovered yet. Select or search a city.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {hiddenGems.map((gem) => {
-              const isSaved = savedGemIds.includes(gem.id);
-              return (
-                <div
-                  key={gem.id}
-                  id={`gem-card-${gem.id}`}
-                  className="bg-white border border-slate-200 rounded-xl p-5 hover:border-slate-300 transition-all flex flex-col justify-between group shadow-sm"
-                >
-                  <div>
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <span className="inline-block text-[10px] font-semibold font-mono uppercase bg-emerald-50 text-emerald-750 px-2 py-0.5 rounded-md mb-2 border border-emerald-100">
-                          Rare Cultural Encounter
-                        </span>
-                        <h4 className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                          {gem.name}
-                        </h4>
-                      </div>
-                      <button
-                        onClick={() => onToggleSaveGem(gem.id)}
-                        id={`save-gem-btn-${gem.id}`}
-                        className={`p-1.5 rounded-lg transition-all ${
-                          isSaved 
-                            ? 'text-rose-500 bg-rose-50 border border-rose-200' 
-                            : 'text-slate-400 hover:text-slate-600 bg-slate-50 border border-slate-200'
-                        }`}
-                        title={isSaved ? "Remove from Travel Diary" : "Bookmark to Travel Diary"}
-                      >
-                        <Heart size={14} fill={isSaved ? "currentColor" : "none"} />
-                      </button>
-                    </div>
-
-                    <p className="text-xs text-slate-600 mt-2 line-clamp-3">
-                      {gem.description}
-                    </p>
-
-                    <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-3 mt-4 space-y-3">
-                      <div className="text-[11px] text-slate-700 leading-relaxed italic">
-                        <span className="font-semibold text-slate-400 block uppercase tracking-wider text-[9px] font-mono not-italic">
-                          Folklore & Oral History
-                        </span>
-                        "{gem.culturalStory}"
-                      </div>
-
-                      {gem.localLegend && (
-                        <div className="text-[11px] text-amber-800 leading-relaxed pl-2 border-l border-amber-500/30">
-                          <span className="font-semibold text-slate-400 block uppercase tracking-wider text-[9px] font-mono">
-                            Local Lore & Whispers
-                          </span>
-                          {gem.localLegend}
-                        </div>
-                      )}
-
-                      <div className="text-[11px] text-slate-700 border-t border-slate-200/60 pt-2">
-                        <span className="font-semibold text-blue-600 block uppercase tracking-wider text-[9px] font-mono">
-                          How to visit respectfully
-                        </span>
-                        {gem.howToExperience}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-end mt-4 pt-3 border-t border-slate-100">
-                    <button
-                      onClick={() => onSelectStorySpot(gem.name, gem.description + ". " + (gem.localLegend || ""))}
-                      id={`narrative-gem-btn-${gem.id}`}
-                      className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 font-mono font-bold py-1 px-2.5 rounded hover:bg-blue-50 transition-all"
-                    >
-                      <Feather size={12} />
-                      Weave Journal Story
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 }

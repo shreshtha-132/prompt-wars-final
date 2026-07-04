@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Sparkles, MessageCircle, RefreshCw, Compass } from 'lucide-react';
+import { Send, RefreshCw, MessageCircle } from 'lucide-react';
 import { ChatMessage, DestinationData } from '../types';
 
 interface CulturalAdvisorProps {
@@ -12,43 +12,34 @@ export default function CulturalAdvisor({ destination }: CulturalAdvisorProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Suggested prompt quick buttons
-  const SUGGESTIONS = destination ? [
-    { text: `How do I say "Thank You" politely in the native language?`, label: "Local Phrases" },
-    { text: `What is the customary tipping protocol and restaurant etiquette here?`, label: "Tipping & Dining" },
-    { text: `What are the core protocols when visiting sacred or religious spaces in ${destination.name}?`, label: "Sacred Etiquette" },
-    { text: `Tell me about a highly respectable way to interact with local artisans without interrupting their work.`, label: "Artisan Protocol" }
-  ] : [
-    { text: "What is the best way to respect community boundaries while traveling?", label: "Respectful Travel" },
-    { text: "How can I discover authentic folklore and oral histories?", label: "Folklore Discovery" }
-  ];
+  const SUGGESTIONS = destination
+    ? [
+        { text: `How do I greet elders respectfully in ${destination.name}?`, label: '🙏 Greetings' },
+        { text: `What are the customs at temples and religious sites in ${destination.name}?`, label: '🛕 Temple Etiquette' },
+        { text: `What local dishes must I try in ${destination.name} and where?`, label: '🍛 Local Cuisine' },
+        { text: `What is the best way to interact respectfully with local artisans?`, label: '🪡 Artisan Protocol' },
+        { text: `What Hindi or local phrases should I know for ${destination.name}?`, label: '🗣️ Useful Phrases' },
+      ]
+    : [
+        { text: 'What is the best way to respect community boundaries while traveling in India?', label: '🙏 Respectful Travel' },
+        { text: 'How can I discover authentic local festivals and oral traditions?', label: '🎊 Festivals' },
+      ];
 
-  // Initialize chat greeting
   useEffect(() => {
-    if (destination) {
-      setMessages([
-        {
-          id: 'welcome',
-          role: 'model',
-          text: `Greeting traveler. I am **Scribe**, your Cultural Concierge. I am deeply acquainted with the customs, lore, and community wisdom of **${destination.name}, ${destination.country}**. 
+    const greeting = destination
+      ? `Namaste 🙏 I am **Pandit Ji**, your cultural guide to **${destination.name}, ${destination.country}**.\n\nI carry deep knowledge of local customs, sacred etiquette, traditional phrases, and authentic cultural experiences. Ask me anything — from temple protocols to tipping conventions to hidden street food spots!`
+      : `Namaste 🙏 I am **Pandit Ji**, your Cultural Concierge for Incredible India.\n\nSearch for a destination to unlock hyper-local wisdom, or ask me anything about Indian culture, customs, and travel etiquette!`;
 
-Ask me anything about local protocols, respectful phrases, culinary etiquette, or how to seek authentic cultural connections!`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        }
-      ]);
-    } else {
-      setMessages([
-        {
-          id: 'welcome-generic',
-          role: 'model',
-          text: `Greetings. I am **Scribe**, your Cultural Concierge. Select a destination or type one above to map out local customs, wisdom, and proverbs together!`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        }
-      ]);
-    }
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'model',
+        text: greeting,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
   }, [destination]);
 
-  // Scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -97,16 +88,15 @@ Ask me anything about local protocols, respectful phrases, culinary etiquette, o
           },
         ]);
       } else {
-        throw new Error('No text returned');
+        throw new Error('No response returned');
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
           id: Math.random().toString(),
           role: 'model',
-          text: 'Forgive me, the communication lines are slightly hazy. Please try asking again.',
+          text: 'Kshama kijiye (apologies) — the connection with the ancient scrolls is hazy right now. Please try again!',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -115,83 +105,72 @@ Ask me anything about local protocols, respectful phrases, culinary etiquette, o
     }
   };
 
+  const renderMessageText = (text: string) => {
+    return text.split('\n\n').map((para, pIdx) => (
+      <p key={pIdx} className="mb-2 last:mb-0 text-sm font-body leading-relaxed">
+        {para.split('**').map((chunk, cIdx) =>
+          cIdx % 2 === 1
+            ? <strong key={cIdx} className="font-semibold">{chunk}</strong>
+            : chunk
+        )}
+      </p>
+    ));
+  };
+
   return (
-    <div id="cultural-advisor-root" className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm h-[550px] flex flex-col justify-between">
+    <div
+      id="cultural-advisor-root"
+      className="india-card flex flex-col"
+      style={{ height: '600px' }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
-        <div className="flex items-center gap-2">
-          <MessageCircle className="text-blue-600" size={18} />
+      <div className="p-5 flex items-center justify-between"
+        style={{ borderBottom: '1px solid rgba(201,150,12,0.15)' }}>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+            style={{ background: 'linear-gradient(135deg, rgba(232,132,26,0.15), rgba(201,150,12,0.15))', border: '1px solid rgba(201,150,12,0.3)' }}>
+            🧙‍♂️
+          </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-900 font-sans">
-              Scribe: Cultural Advisor
+            <h3 className="font-display font-bold text-base" style={{ color: 'var(--text-dark)' }}>
+              Pandit Ji
             </h3>
-            {destination ? (
-              <span className="text-[10px] text-blue-600 font-mono">
-                Concierge for {destination.name}
-              </span>
-            ) : (
-              <span className="text-[10px] text-slate-400 font-mono">
-                Universal Guidance
-              </span>
-            )}
+            <span className="text-xs font-body" style={{ color: 'var(--saffron)' }}>
+              {destination ? `Cultural Guide · ${destination.name}` : 'India Cultural Concierge'}
+            </span>
           </div>
         </div>
-
         <button
           onClick={() => {
-            if (destination) {
-              setMessages([
-                {
-                  id: 'welcome',
-                  role: 'model',
-                  text: `Greeting traveler. I am **Scribe**, your Cultural Concierge. I am deeply acquainted with the customs, lore, and community wisdom of **${destination.name}, ${destination.country}**. \n\nAsk me anything about local protocols, respectful phrases, culinary etiquette, or how to seek authentic cultural connections!`,
-                  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                }
-              ]);
-            }
+            const greeting = destination
+              ? `Namaste 🙏 I am **Pandit Ji**, your guide to **${destination.name}**. How may I assist you?`
+              : `Namaste 🙏 I am **Pandit Ji**. Ask me about Indian culture!`;
+            setMessages([{ id: 'reset', role: 'model', text: greeting, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
           }}
-          className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
-          title="Reset Concierge Conversation"
+          className="p-2 rounded-full transition-all"
+          style={{ border: '1px solid rgba(201,150,12,0.2)', color: 'var(--text-muted)' }}
+          title="Reset conversation"
         >
-          <RefreshCw size={12} />
+          <RefreshCw size={13} />
         </button>
       </div>
 
-      {/* Messages body */}
+      {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 custom-scrollbar"
+        className="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll"
         id="chat-messages-container"
       >
         {messages.map((m) => {
           const isModel = m.role === 'model';
           return (
-            <div
-              key={m.id}
-              className={`flex flex-col ${isModel ? 'items-start' : 'items-end'} space-y-1`}
-            >
+            <div key={m.id} className={`flex flex-col ${isModel ? 'items-start' : 'items-end'} gap-1`}>
               <div
-                className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
-                  isModel
-                    ? 'bg-slate-50 border border-slate-200/80 text-slate-700 rounded-tl-none'
-                    : 'bg-blue-50 border border-blue-200 text-blue-900 rounded-tr-none'
-                }`}
+                className={`max-w-[85%] px-4 py-3 ${isModel ? 'chat-model' : 'chat-user'}`}
               >
-                {/* Simplified markdown formatter for chat */}
-                {m.text.split('\n\n').map((para, pIdx) => {
-                  return (
-                    <p key={pIdx} className="mb-2 last:mb-0">
-                      {para.split('**').map((chunk, cIdx) => {
-                        if (cIdx % 2 === 1) {
-                          return <strong key={cIdx} className="text-blue-700 font-bold">{chunk}</strong>;
-                        }
-                        return chunk;
-                      })}
-                    </p>
-                  );
-                })}
+                {renderMessageText(m.text)}
               </div>
-              <span className="text-[9px] text-slate-400 font-mono px-1">
+              <span className="text-[10px] px-1 font-body" style={{ color: 'var(--text-muted)' }}>
                 {m.timestamp}
               </span>
             </div>
@@ -199,56 +178,75 @@ Ask me anything about local protocols, respectful phrases, culinary etiquette, o
         })}
 
         {loading && (
-          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono py-1">
-            <Sparkles size={11} className="text-blue-600 animate-spin" />
-            Scribe is writing native guidelines...
+          <div className="flex items-center gap-2 text-sm font-body" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex gap-1">
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--saffron)', animationDelay: '0ms' }} />
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--gold)', animationDelay: '150ms' }} />
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: 'var(--saffron)', animationDelay: '300ms' }} />
+            </div>
+            <span>Pandit Ji is consulting wisdom...</span>
           </div>
         )}
       </div>
 
-      {/* Suggested Quick Prompt buttons */}
-      <div className="space-y-3">
-        {messages.length === 1 && !loading && (
-          <div className="space-y-1.5">
-            <span className="text-[9px] font-mono uppercase text-slate-400 tracking-wider flex items-center gap-1">
-              <Compass size={10} />
-              Quick Custom Inquiries
-            </span>
-            <div className="flex flex-wrap gap-1.5 max-h-[110px] overflow-y-auto">
-              {SUGGESTIONS.map((s, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSend(s.text)}
-                  className="text-[10px] bg-slate-50 border border-slate-200 text-slate-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-300 px-2.5 py-1 rounded-lg transition-all text-left"
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
+      {/* Suggestion pills */}
+      {messages.length === 1 && !loading && (
+        <div className="px-4 pt-2 pb-1">
+          <div className="text-[10px] font-body font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+            Quick Inquiries
           </div>
-        )}
-
-        {/* Input box */}
-        <div className="flex gap-2">
-          <input
-            type="text"
-            id="advisor-chat-input"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
-            placeholder={destination ? `Inquire about ${destination.name} customs...` : "Type a custom travel query..."}
-            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500/50 transition-all"
-            disabled={loading}
-          />
-          <button
-            onClick={() => handleSend(inputValue)}
-            id="advisor-chat-send-btn"
-            className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all shadow-sm"
-            disabled={loading}
-          >
-            <Send size={14} />
-          </button>
+          <div className="flex flex-wrap gap-1.5">
+            {SUGGESTIONS.map((s, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleSend(s.text)}
+                className="text-xs font-body px-2.5 py-1 rounded-full transition-all"
+                style={{
+                  background: 'rgba(232,132,26,0.08)',
+                  border: '1px solid rgba(232,132,26,0.25)',
+                  color: 'var(--saffron-dark)',
+                }}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Input */}
+      <div className="p-4 flex gap-2" style={{ borderTop: '1px solid rgba(201,150,12,0.15)' }}>
+        <input
+          id="advisor-chat-input"
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
+          placeholder={destination ? `Ask about ${destination.name} customs...` : 'Ask Pandit Ji about India...'}
+          disabled={loading}
+          className="flex-1 px-4 py-2.5 rounded-full text-sm font-body transition-all focus:outline-none"
+          style={{
+            background: 'rgba(232,132,26,0.06)',
+            border: '1.5px solid rgba(232,132,26,0.2)',
+            color: 'var(--text-dark)',
+          }}
+          onFocus={(e) => {
+            (e.currentTarget as HTMLInputElement).style.borderColor = 'var(--saffron)';
+            (e.currentTarget as HTMLInputElement).style.boxShadow = '0 0 0 3px rgba(232,132,26,0.12)';
+          }}
+          onBlur={(e) => {
+            (e.currentTarget as HTMLInputElement).style.borderColor = 'rgba(232,132,26,0.2)';
+            (e.currentTarget as HTMLInputElement).style.boxShadow = 'none';
+          }}
+        />
+        <button
+          id="advisor-chat-send-btn"
+          onClick={() => handleSend(inputValue)}
+          disabled={loading || !inputValue.trim()}
+          className="btn-saffron p-2.5 rounded-full"
+        >
+          <Send size={15} />
+        </button>
       </div>
     </div>
   );
