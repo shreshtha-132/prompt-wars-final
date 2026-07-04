@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 /* ============================================================
@@ -28,6 +28,7 @@
   --text-muted: #8b6240;
 
   /* Font Families */
+  --font-logo: 'Cinzel', serif;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Poppins', system-ui, sans-serif;
   --font-devanagari: 'Noto Sans Devanagari', sans-serif;
@@ -78,6 +79,7 @@ body {
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */
+.font-logo { font-family: var(--font-logo); }
 .font-display { font-family: var(--font-display); }
 .font-devanagari { font-family: var(--font-devanagari); }
 .font-body { font-family: var(--font-body); }
@@ -717,4 +719,13 @@ body {
 @media (max-width: 640px) {
   .tab-btn { padding: 7px 12px; font-size: 12px; }
   .hero-title { font-size: 2.5rem !important; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
 }

@@ -1,53 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Search, MapPin, AlertCircle, Compass, Mountain, Landmark, Trees, Camera } from 'lucide-react';
 import { motion } from 'motion/react';
 import { TravelPreference } from '../types';
-import indiaBg from '../assets/india_bg.jpg';
 
+// Import local assets
+import indiaBg from '../assets/india_bg_v3.png';
+import spicesImg from '../assets/spices.jpg';
+import tajImg from '../assets/taj.jpg';
+import rickshawImg from '../assets/rickshaw.jpg';
+import varanasiImg from '../assets/varanasi.jpg';
+import jaipurImg from '../assets/jaipur.jpg';
+import munnarImg from '../assets/munnar.jpg';
+import ladakhImg from '../assets/ladakh.jpg';
+
+/**
+ * Props for the HomePage component
+ */
 interface HomePageProps {
+  /** Callback fired when a search is submitted */
   onSearch: (destination: string) => void;
+  /** Whether a search is currently in progress */
   loading: boolean;
-  loadingDestinationName: string | null;
+  /** Any error message to display */
   error: string | null;
 }
 
 const FEATURED = [
   { 
     name: 'Varanasi', region: 'Uttar Pradesh', category: 'Spiritual', 
-    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=800&auto=format&fit=crop',
+    image: varanasiImg,
     icon: <Landmark className="w-6 h-6" /> 
   },
   { 
     name: 'Jaipur', region: 'Rajasthan', category: 'Heritage', 
-    image: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80&w=800&auto=format&fit=crop',
+    image: jaipurImg,
     icon: <Camera className="w-6 h-6" /> 
   },
   { 
     name: 'Munnar', region: 'Kerala', category: 'Nature', 
-    image: 'https://images.unsplash.com/photo-1593693397690-362cb9666cb3?q=80&w=800&auto=format&fit=crop',
+    image: munnarImg,
     icon: <Trees className="w-6 h-6" /> 
   },
   { 
     name: 'Ladakh', region: 'Jammu & Kashmir', category: 'Adventure', 
-    image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=800&auto=format&fit=crop',
+    image: ladakhImg,
     icon: <Mountain className="w-6 h-6" /> 
   },
 ];
 
-export default function HomePage({ onSearch, loading, loadingDestinationName, error }: HomePageProps) {
+/**
+ * HomePage Component
+ * Displays the landing page with a search bar and featured destinations.
+ * Wrapped in React.memo for performance optimization.
+ * 
+ * @param {HomePageProps} props - Component props
+ * @returns {JSX.Element} The rendered home page
+ */
+const HomePage: React.FC<HomePageProps> = React.memo(({ onSearch, loading, error }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearchSubmit = () => {
+  /**
+   * Handles the search form submission.
+   */
+  const handleSearchSubmit = useCallback(() => {
     if (searchQuery.trim() && !loading) {
       onSearch(searchQuery.trim());
     }
-  };
+  }, [searchQuery, loading, onSearch]);
 
   return (
-    <div className="relative min-h-screen text-white">
+    <div className="relative min-h-screen text-stone-900">
       {/* ── Fixed Maximalist Background ── */}
       <div 
-        className="bg-maximalist fixed inset-0 -z-10" 
+        className="bg-maximalist fixed inset-0 -z-10 bg-cover bg-center" 
         style={{ backgroundImage: `url(${indiaBg})` }}
       />
 
@@ -57,39 +82,42 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-saffron to-crimson shadow-lg">
             <Compass size={20} className="text-white" />
           </div>
-          <span className="font-display font-bold text-2xl tracking-wide text-white text-shadow-hero">
+          <span className="font-logo font-bold text-2xl tracking-wide text-amber-950 drop-shadow-sm">
             Bharat Darshan
           </span>
         </div>
         
         <div className="hidden sm:flex items-center gap-6 text-sm font-body font-medium">
-          <span className="text-white/90">Cultural Discovery Platform</span>
+          <span className="text-amber-950/80 font-bold">Cultural Discovery Platform</span>
         </div>
       </nav>
 
       <main className="relative z-10 flex flex-col items-center justify-center pt-24 pb-16 px-4 min-h-[85vh] text-center overflow-hidden">
         
-        {/* Decorative Floating Images (Collage) */}
+        {/* Decorative Floating Images (Collage) using local assets */}
         <motion.img 
-          src="https://images.unsplash.com/photo-1517345438041-fc88ba29a286?q=80&w=400&auto=format&fit=crop" 
+          src={spicesImg} 
           alt="Indian Spices" 
-          className="collage-img hidden lg:block w-48 h-64 -left-12 top-20 fixed"
+          loading="lazy"
+          className="collage-img hidden lg:block w-48 h-64 -left-12 top-20 fixed object-cover"
           initial={{ opacity: 0, y: 50, rotate: -15 }}
           animate={{ opacity: 0.85, y: 0, rotate: -8 }}
           transition={{ duration: 1, delay: 0.2 }}
         />
         <motion.img 
-          src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=400&auto=format&fit=crop" 
+          src={tajImg} 
           alt="Taj Mahal" 
-          className="collage-img hidden lg:block w-56 h-40 right-10 top-32 fixed"
+          loading="lazy"
+          className="collage-img hidden lg:block w-56 h-40 right-10 top-32 fixed object-cover"
           initial={{ opacity: 0, x: 50, rotate: 10 }}
           animate={{ opacity: 0.85, x: 0, rotate: 6 }}
           transition={{ duration: 1, delay: 0.4 }}
         />
         <motion.img 
-          src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=400&auto=format&fit=crop" 
+          src={rickshawImg} 
           alt="Auto Rickshaw" 
-          className="collage-img hidden md:block w-40 h-40 left-20 bottom-32 fixed rounded-full border-saffron"
+          loading="lazy"
+          className="collage-img hidden md:block w-40 h-40 left-20 bottom-32 fixed rounded-full border-saffron object-cover"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.85, scale: 1, rotate: -12 }}
           transition={{ duration: 1, delay: 0.6 }}
@@ -102,13 +130,13 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-4xl mx-auto"
           >
-            <h1 className="font-display text-4xl sm:text-6xl text-white mb-2 text-shadow-hero leading-tight">
+            <h1 className="font-display text-4xl sm:text-6xl text-amber-950 mb-2 drop-shadow-sm leading-tight">
               Discover the Soul of
             </h1>
-            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-shadow-hero leading-tight" style={{ color: '#f5a543' }}>
+            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-crimson drop-shadow-md leading-tight">
               Bharat
             </h2>
-            <p className="font-devanagari text-amber-200/80 text-lg sm:text-2xl mb-6 tracking-wide drop-shadow-md">
+            <p className="font-devanagari text-amber-900/90 font-medium text-lg sm:text-2xl mb-6 tracking-wide drop-shadow-sm">
               अतुल्य भारत की सांस्कृतिक यात्रा पर निकलें
             </p>
             
@@ -131,8 +159,6 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
                     className="glass-input w-full pl-14 pr-6 py-4 text-base bg-transparent border-none outline-none text-white placeholder-white/50"
                     disabled={loading}
                     aria-label="Search for an Indian destination"
-                    aria-describedby="search-hint"
-                    aria-busy={loading}
                     autoComplete="off"
                   />
                 </div>
@@ -143,34 +169,11 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
                   className="btn-saffron px-10 py-4 rounded-full text-base font-bold flex items-center justify-center gap-2 shrink-0 transition-transform hover:scale-105"
                   aria-label={loading ? 'Searching...' : 'Search for destination'}
                 >
-                  {loading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      <span>Discovering...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Explore</span>
-                      <MapPin size={18} />
-                    </>
-                  )}
+                  <span>Explore</span>
+                  <MapPin size={18} />
                 </button>
               </div>
             </div>
-
-            {/* Loading indicator */}
-            {loading && loadingDestinationName && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                id="search-hint"
-                className="mt-6 text-saffron-light text-base font-medium text-shadow-hero"
-                role="status"
-                aria-live="polite"
-              >
-                Preparing your guide to <span className="font-bold text-white">{loadingDestinationName}</span> — this takes a moment
-              </motion.div>
-            )}
 
             {/* Error */}
             {error && (
@@ -236,4 +239,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
       </section>
     </div>
   );
-}
+});
+
+HomePage.displayName = 'HomePage';
+export default HomePage;

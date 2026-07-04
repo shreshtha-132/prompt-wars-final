@@ -79,3 +79,20 @@ export function isPlausibleIndianPlace(name: string): boolean {
   const trimmed = name.trim();
   return /^[\p{L}\s,.-]+$/u.test(trimmed) && trimmed.length >= 2 && trimmed.length <= 100;
 }
+
+export const INDIAN_CULTURAL_FACTS = [
+  "India has 22 officially recognized languages, but over 19,500 languages or dialects are spoken as mother tongues.",
+  "The Kumbh Mela, a major Hindu pilgrimage, is visible from space due to the massive gathering of millions of people.",
+  "Varanasi is believed to be one of the oldest continuously inhabited cities in the world, dating back over 3,000 years.",
+  "Ayurveda, originating in India over 5,000 years ago, is considered the oldest medical system in the world.",
+  "India is the birthplace of chess, originally known as 'Chaturanga' in the 6th century.",
+  "Mawsynram, a village in Meghalaya, holds the Guinness World Record for the highest average annual rainfall.",
+  "The Golden Temple in Amritsar feeds over 100,000 people a day for free through its community kitchen (Langar).",
+  "India has the highest number of post offices in the world, including a floating post office on Dal Lake, Srinagar.",
+  "The Bandra-Worli Sea Link in Mumbai has steel wires equal to the earth's circumference.",
+  "Shani Shingnapur is a village in Maharashtra where houses have no doors, due to deep faith in Lord Shani.",
+  "India is home to the world's highest rail bridge, the Chenab Bridge in Jammu and Kashmir, which is taller than the Eiffel Tower.",
+  "Yoga originated in India over 5,000 years ago and is deeply rooted in physical, mental, and spiritual practices.",
+  "Sushruta, an ancient Indian physician, is widely regarded as the 'Father of Surgery' for his work in 600 BCE.",
+  "The Indian state of Sikkim became the first fully organic state in the world in 2016."
+];

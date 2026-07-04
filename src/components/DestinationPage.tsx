@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, MapPin, Sparkles, Search, Compass, BookOpen } from 'lucide-react';
 import { motion } from 'motion/react';
 import { DestinationData, TravelPreference } from '../types';
-import indiaBg from '../assets/india_bg.jpg';
+import indiaBg from '../assets/india_bg_v2.png';
 import DiscoveryDeck from './DiscoveryDeck';
 import ExperienceLog from './ExperienceLog';
 import CulturalTrivia from './CulturalTrivia';
