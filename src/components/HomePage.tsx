@@ -82,13 +82,13 @@ const HomePage: React.FC<HomePageProps> = React.memo(({ onSearch, loading, error
           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br from-saffron to-crimson shadow-lg">
             <Compass size={20} className="text-white" />
           </div>
-          <span className="font-logo font-bold text-2xl tracking-wide text-amber-950 drop-shadow-sm">
+          <span className="font-logo font-bold text-2xl tracking-wide text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             Bharat Darshan
           </span>
         </div>
         
         <div className="hidden sm:flex items-center gap-6 text-sm font-body font-medium">
-          <span className="text-amber-950/80 font-bold">Cultural Discovery Platform</span>
+          <span className="text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Cultural Discovery Platform</span>
         </div>
       </nav>
 
@@ -130,13 +130,13 @@ const HomePage: React.FC<HomePageProps> = React.memo(({ onSearch, loading, error
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-4xl mx-auto"
           >
-            <h1 className="font-display text-4xl sm:text-6xl text-amber-950 mb-2 drop-shadow-sm leading-tight">
+            <h1 className="font-display text-4xl sm:text-6xl text-white mb-2 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] font-bold leading-tight">
               Discover the Soul of
             </h1>
-            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-crimson drop-shadow-md leading-tight">
+            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-saffron drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight">
               Bharat
             </h2>
-            <p className="font-devanagari text-amber-900/90 font-medium text-lg sm:text-2xl mb-6 tracking-wide drop-shadow-sm">
+            <p className="font-devanagari text-white font-medium text-lg sm:text-2xl mb-6 tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               अतुल्य भारत की सांस्कृतिक यात्रा पर निकलें
             </p>
             
