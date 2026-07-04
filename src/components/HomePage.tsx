@@ -123,7 +123,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
       <div className="india-border-strip" />
 
       {/* ── Navigation ── */}
-      <nav className="india-nav sticky top-0 z-50">
+      <nav className="india-nav sticky top-0 z-50" role="navigation" aria-label="Main navigation">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full flex items-center justify-center"
@@ -144,7 +144,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
       </nav>
 
       {/* ── Hero Section ── */}
-      <section className="hero-bg relative overflow-hidden" style={{ minHeight: '92vh' }}>
+      <section className="hero-bg relative overflow-hidden" style={{ minHeight: '92vh' }} aria-label="Hero — Search for an Indian destination">
         {/* Decorative mandala SVG */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-10">
           <svg viewBox="0 0 500 500" className="w-[600px] h-[600px] animate-spin-slow" style={{ animationDuration: '60s' }}>
@@ -205,16 +205,20 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
           <div className="w-full max-w-2xl">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
-                <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-amber-400/70" />
+                <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-amber-400/70" aria-hidden="true" />
                 <input
                   id="home-search-input"
-                  type="text"
+                  type="search"
                   placeholder="Search any Indian city or region... (e.g., Varanasi, Coorg)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
                   className="india-search w-full pl-12 pr-5 py-4 text-sm"
                   disabled={loading}
+                  aria-label="Search for an Indian destination"
+                  aria-describedby="search-hint"
+                  aria-busy={loading}
+                  autoComplete="off"
                 />
               </div>
               <button
@@ -222,6 +226,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
                 onClick={handleSearchSubmit}
                 disabled={loading || !searchQuery.trim()}
                 className="btn-saffron px-8 py-4 rounded-full text-sm font-semibold flex items-center justify-center gap-2 shrink-0"
+                aria-label={loading ? 'Searching...' : 'Search for destination'}
               >
                 {loading ? (
                   <>
@@ -239,16 +244,24 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
 
             {/* Loading indicator */}
             {loading && loadingDestinationName && (
-              <div className="mt-4 text-amber-300/70 text-sm font-body animate-fade-in">
+              <div
+                id="search-hint"
+                className="mt-4 text-amber-300/70 text-sm font-body animate-fade-in"
+                role="status"
+                aria-live="polite"
+              >
                 Preparing your guide to <span className="font-semibold text-amber-300">{loadingDestinationName}</span> — this takes a moment
               </div>
             )}
 
             {/* Error */}
             {error && (
-              <div className="mt-4 px-4 py-3 rounded-xl text-sm font-body animate-fade-in"
-                style={{ background: 'rgba(155,28,28,0.3)', border: '1px solid rgba(155,28,28,0.5)', color: '#fca5a5' }}>
-                ⚠️ {error}
+              <div
+                className="mt-4 px-4 py-3 rounded-xl text-sm font-body animate-fade-in"
+                style={{ background: 'rgba(155,28,28,0.3)', border: '1px solid rgba(155,28,28,0.5)', color: '#fca5a5' }}
+                role="alert"
+                aria-live="assertive"
+              >  ⚠️ {error}
               </div>
             )}
           </div>
@@ -263,7 +276,13 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
 
       {/* ── Full-page loading overlay ── */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center modal-overlay">
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Loading cultural atlas"
+          aria-live="polite"
+        >
           <div className="text-center p-8 rounded-2xl animate-bloom"
             style={{ background: 'var(--parchment)', border: '1px solid rgba(201,150,12,0.3)', maxWidth: '380px' }}>
             {/* Spinning mandala */}
@@ -288,7 +307,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
       )}
 
       {/* ── How It Works ── */}
-      <section className="py-16 px-6" style={{ background: 'var(--ivory)', borderTop: '1px solid rgba(201,150,12,0.15)' }}>
+      <section className="py-16 px-6" style={{ background: 'var(--ivory)', borderTop: '1px solid rgba(201,150,12,0.15)' }} aria-label="How it works">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <div className="lotus-divider mb-4">
@@ -317,7 +336,7 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
       </section>
 
       {/* ── Featured Destinations ── */}
-      <section className="py-16 px-6 parchment-bg" style={{ borderTop: '1px solid rgba(201,150,12,0.12)' }}>
+      <section className="py-16 px-6 parchment-bg" style={{ borderTop: '1px solid rgba(201,150,12,0.12)' }} aria-label="Featured destinations">
         <div className="max-w-7xl mx-auto">
           {/* Section header */}
           <div className="text-center mb-12">
@@ -344,6 +363,8 @@ export default function HomePage({ onSearch, loading, loadingDestinationName, er
                 disabled={loading}
                 className={`dest-card text-left animate-slide-up stagger-${Math.min(idx + 1, 5)}`}
                 style={{ opacity: 0, animationFillMode: 'forwards', animationDelay: `${idx * 0.05}s` }}
+                aria-label={`Explore ${dest.name}, ${dest.region} — ${dest.category} destination`}
+                aria-disabled={loading}
               >
                 {/* Card gradient header */}
                 <div className={`bg-gradient-to-br ${dest.color} p-6 text-center relative overflow-hidden`} style={{ minHeight: '130px' }}>

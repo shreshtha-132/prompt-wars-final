@@ -53,7 +53,7 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
       <div className="india-border-strip" />
 
       {/* ── Navigation bar ── */}
-      <nav className="india-nav sticky top-0 z-50">
+      <nav className="india-nav sticky top-0 z-50" role="navigation" aria-label="Destination navigation">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           {/* Back button + logo */}
           <div className="flex items-center gap-4">
@@ -61,6 +61,7 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
               id="back-to-home-btn"
               onClick={onBack}
               className="flex items-center gap-2 text-amber-300/80 hover:text-amber-300 transition-colors text-sm font-body font-medium"
+              aria-label="Back to Bharat Darshan home"
             >
               <ArrowLeft size={16} />
               <span className="hidden sm:block">Bharat Darshan</span>
@@ -81,13 +82,15 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400/60" />
               <input
                 id="dest-search-input"
-                type="text"
+                type="search"
                 placeholder="Search another place..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleNewSearch()}
                 className="india-search w-full pl-9 pr-3 py-2 text-xs"
                 disabled={loading}
+                aria-label="Search for another destination"
+                autoComplete="off"
               />
             </div>
             <button
@@ -95,6 +98,7 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
               onClick={handleNewSearch}
               disabled={loading || !searchQuery.trim()}
               className="btn-saffron px-3 py-2 rounded-full text-xs font-semibold"
+              aria-label="Search"
             >
               {loading ? '...' : 'Go'}
             </button>
@@ -184,13 +188,16 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
       {/* ── Tab Navigation ── */}
       <div className="sticky z-40 px-6 py-4" style={{ top: '57px', background: 'rgba(253,246,227,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(201,150,12,0.15)' }}>
         <div className="max-w-5xl mx-auto">
-          <div className="tab-nav" style={{ width: 'fit-content', maxWidth: '100%' }}>
+          <div className="tab-nav" style={{ width: 'fit-content', maxWidth: '100%' }} role="tablist" aria-label="Destination sections">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 id={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`tab-panel-${tab.id}`}
               >
                 {tab.emoji} {tab.label}
               </button>
@@ -200,7 +207,7 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
       </div>
 
       {/* ── Tab Content ── */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8" role="main" id="main-content">
 
         {activeTab === 'attractions' && (
           <section id="tab-panel-attractions" className="animate-fade-in">
@@ -348,7 +355,13 @@ export default function DestinationPage({ data, onBack, onSearch, loading }: Des
 
       {/* ── Story Narrative Modal ── */}
       {selectedStory && (
-        <div className="modal-overlay" onClick={() => setSelectedStory(null)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedStory(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Cultural story for ${selectedStory.spotName}`}
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <StoryNarrative
               spotName={selectedStory.spotName}

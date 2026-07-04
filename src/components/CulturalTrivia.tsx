@@ -150,7 +150,7 @@ export default function CulturalTrivia({ triviaQuestions, destinationName }: Cul
           </div>
 
           {/* Options */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Answer options">
             {currentQuestion.options.map((option, idx) => {
               const isSelected = selectedAnswer === idx;
               const isCorrect = currentQuestion.correctIndex === idx;
@@ -171,6 +171,9 @@ export default function CulturalTrivia({ triviaQuestions, destinationName }: Cul
                   disabled={answered}
                   onClick={() => handleSelectOption(idx)}
                   className={`${extraClass} w-full p-3.5 rounded-xl text-sm font-body flex items-center justify-between gap-2`}
+                  role="radio"
+                  aria-checked={isSelected}
+                  aria-label={`Option ${idx + 1}: ${option}${answered && isCorrect ? ' (Correct answer)' : answered && isWrongSelected ? ' (Your answer — incorrect)' : ''}`}
                 >
                   <span className="text-left">{option}</span>
                   {answered && isCorrect && <CheckCircle2 size={16} style={{ color: '#15803d', flexShrink: 0 }} />}

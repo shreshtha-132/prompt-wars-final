@@ -56,6 +56,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen parchment-bg">
+      <a href="#main-content" className="skip-link sr-only focus:not-sr-only">
+        Skip to content
+      </a>
       {view === 'home' && (
         <HomePage
           onSearch={handleSearch}

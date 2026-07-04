@@ -54,6 +54,27 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Accessibility: Focus outlines */
+*:focus-visible {
+  outline: 2px solid var(--saffron-light);
+  outline-offset: 2px;
+}
+
+/* Accessibility: Skip to content */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--saffron);
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
+
 /* ============================================================
    TYPOGRAPHY
    ============================================================ */

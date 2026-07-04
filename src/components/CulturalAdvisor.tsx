@@ -160,6 +160,8 @@ export default function CulturalAdvisor({ destination }: CulturalAdvisorProps) {
         ref={scrollRef}
         className="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll"
         id="chat-messages-container"
+        role="log"
+        aria-label="Conversation with Pandit Ji"
       >
         {messages.map((m) => {
           const isModel = m.role === 'model';
@@ -224,6 +226,7 @@ export default function CulturalAdvisor({ destination }: CulturalAdvisorProps) {
           onKeyDown={(e) => e.key === 'Enter' && handleSend(inputValue)}
           placeholder={destination ? `Ask about ${destination.name} customs...` : 'Ask Pandit Ji about India...'}
           disabled={loading}
+          aria-label="Your message to Pandit Ji"
           className="flex-1 px-4 py-2.5 rounded-full text-sm font-body transition-all focus:outline-none"
           style={{
             background: 'rgba(232,132,26,0.06)',
