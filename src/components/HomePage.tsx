@@ -133,7 +133,7 @@ const HomePage: React.FC<HomePageProps> = React.memo(({ onSearch, loading, error
             <h1 className="font-display text-4xl sm:text-6xl text-white mb-2 drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] font-bold leading-tight">
               Discover the Soul of
             </h1>
-            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-saffron drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight">
+            <h2 className="font-display font-bold italic text-6xl sm:text-8xl mb-4 text-orange-400 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight">
               Bharat
             </h2>
             <p className="font-devanagari text-white font-medium text-lg sm:text-2xl mb-6 tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
